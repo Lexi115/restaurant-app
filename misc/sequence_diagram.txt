@@ -1,0 +1,10 @@
+title Prenotazione Tavolo
+
+actor Utente
+Utente->Client: Click su "aggiungi tavolo"
+Client->Web Server: HTTP request (info tavolo)
+Web Server->DMBS Server: Query SQL
+DMBS Server->DMBS Server:
+DMBS Server->Web Server: Risultato query
+Web Server->Client: HTTP response (risultato operazione)
+Client->Utente: Finestra di dialogo con messaggio

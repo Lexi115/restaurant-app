@@ -5,20 +5,20 @@
         $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
         $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
 
-        $user = get_user($username, $password);
-        switch ($user) {
-            case 1:
-                die('Utente non trovato');
-                break;
-            case 2:
-                die('Password non corretta');
-                break;
+        // Verifica esistenza dell'utente
+        $user = get_user($username);
+        if (!$user) {
+            die("Utente non trovato");
+        }
+
+        // Verifica password immessa con quella salvata nel database
+        if (!password_verify($password, $user['password_hash'])) {
+            die("Pw non corretta");
         }
 
         session_start();
         $_SESSION['user'] = $user;
         echo var_dump($_SESSION['user']);
-
     }
 
     exit();

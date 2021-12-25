@@ -1,4 +1,5 @@
 <?php
+    require 'inc_nodirect.php';
     require 'inc_functions.php';
 
     if (true) {

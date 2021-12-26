@@ -3,20 +3,37 @@
     
     /* 
      * ----------------------------------------------- *
-     * Database functions
+     * Funzioni database
      * ----------------------------------------------- *
      */
 
-    function get_user($username, $token = '') {
+    function get_users($username, $token = '', $group = '', $columns = '*', $limit = 5, $page = 0) {
         global $conn;
 
+        $columns = $conn->real_escape_string($columns);
         $username = $conn->real_escape_string($username);
         $token = $conn->real_escape_string($token);
+        $group = $conn->real_escape_string($group);
+        $limit = $conn->real_escape_string($limit);
+        $page = $conn->real_escape_string($page);
 
-        $sql = "SELECT * FROM `accounts` WHERE `username` = '%s' OR `token_accesso` = '%s';";
-        $result = $conn->query(sprintf($sql, $username, $token));
+        $sql = "SELECT %s FROM ((`accounts` INNER JOIN `gruppi` ON `accounts`.`gruppo`=`gruppi`.`cod_gruppo`) 
+        INNER JOIN `permessi` ON `gruppi`.`set_permessi`=`permessi`.`cod_set_permessi`) WHERE `username` LIKE '%s' 
+        OR `token_accesso`='%s' OR `cod_gruppo` LIKE '%s' LIMIT %s OFFSET %s;";
 
-        return $result->num_rows == 0 ? false : $result->fetch_assoc();
+        $result = $conn->query(sprintf($sql, $columns, $username, $token, $group, $limit, $page));
+
+        if ($result->num_rows > 0) {
+            $arr = array();
+
+            while ($row = $result->fetch_assoc()) {
+                array_push($arr, $row);
+            }
+
+            return $arr;
+        } else {
+            return false;
+        }
     }
 
     function create_user($username, $password, $group) {

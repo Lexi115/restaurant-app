@@ -87,36 +87,75 @@
         $date = $conn->real_escape_string($date) . ' ' . $conn->real_escape_string($time) . ':00';
         $number_of_people = $conn->real_escape_string($number_of_people);
         $notes = $conn->real_escape_string($notes);
-        $reservation_id = bin2hex(random_bytes(10));
+        $reservation_id = bin2hex(random_bytes(5));
 
         $sql = "INSERT INTO `prenotazioni` (`cod_prenotazione`, `cf_cliente`, `n_persone`, `note_aggiuntive`, `status`) 
         VALUES ('%s', '%s', '%s', '%s', 1);";
         $conn->query(sprintf($sql, $reservation_id, $customer, $number_of_people, $notes));
 
+        while ($number_of_people > 0) {
+            echo "num people: " . $number_of_people . "<br>";
+            $table = get_free_table($number_of_people);
 
-        $table = get_free_table($date);
-        if (!$table) {
-            return false;
+            // Controlla disponibilità tavoli
+            if (!$table) {
+                echo "table false<br>";
+                // cancella tutti i records riferiti a quella prenot
+                $sql = "DELETE FROM `prenotazioni` WHERE `cod_prenotazione` = '%s';";
+                $conn->query(sprintf($sql, $reservation_id));
+                echo sprintf($sql, $reservation_id) . "<br>";
+                echo $conn->error . "<br>";
+                break;
+            }
+
+            // prenota tavolo
+            $sql = "INSERT INTO `tavoliprenotati` (`cod_prenotazione`, `numero_tavolo`, `data`) 
+            VALUES ('%s', '%s', '%s');";
+            $conn->query(sprintf($sql, $reservation_id, $table['numero_tavolo'], $date));
+
+            // decrementa numero persone
+            $number_of_people -= $table['n_posti'];
         }
-
-        $sql = "INSERT INTO `tavoliprenotati` (`cod_prenotazione`, `numero_tavolo`, `data`) 
-        VALUES ('%s', '%s', '%s');";
-        echo sprintf($sql, $reservation_id, $table['numero_tavolo'], $date) . '<br>';
-        $conn->query(sprintf($sql, $reservation_id, $table['numero_tavolo'], $date));
-
     }
 
-    function get_free_table($date) {
+    function get_free_table($number_of_people) {
         global $conn;
 
-        $sql = "SELECT * FROM `tavoli` WHERE `numero_tavolo` NOT IN (SELECT `numero_tavolo` FROM `tavoliprenotati`);";
+        $sql = "SELECT * FROM `tavoli` WHERE `numero_tavolo` NOT IN (SELECT `numero_tavolo` FROM `tavoliprenotati`) ORDER BY `n_posti` ASC;";
         $result = $conn->query($sql);
         $table_array = to_array($result);
-
+        
+        //return json_encode($table_array);
         if (!$table_array) 
             return false;
 
-        return $table_array[rand(0, count($table_array) - 1)];
+        return $table_array[get_table_index_for($number_of_people, $table_array)];
+
+        //return $table_array[rand(0, count($table_array) - 1)];
+    }
+
+    function get_table_index_for($number_of_people, $table_array) {
+        $i = 0;
+        $length = count($table_array);
+
+        while ($i < $length && $number_of_people > $table_array[$i]['n_posti']) {
+            $i++;
+        }
+
+        return ($i == $length) ? $i - 1 : $i;
+
+        /* if ($i - 1 < 0)
+            return $i;
+
+        else if ($i == $length)
+            return $length - 1;
+
+        else {
+            $diff1 = abs($number_of_people - $table_array[$i - 1]['n_posti']); // 2
+            $diff2 = abs($number_of_people - $table_array[$i]['n_posti']); // 1
+
+            return $diff2 <= $diff1 ? $i : $i - 1; // 1 <= 2
+        } */
     }
 
  

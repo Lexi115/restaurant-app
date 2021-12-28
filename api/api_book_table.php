@@ -15,6 +15,6 @@
         create_customer($fiscal_code, $last_name, $first_name, $phone_number, $address);
         create_reservation($fiscal_code, $date, $time, $number_of_people, $notes);
 
-        echo "done";
+        echo "<br><br>done";
     }
 ?>

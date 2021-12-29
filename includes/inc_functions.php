@@ -80,6 +80,13 @@
         return true;
     }
 
+    function delete_reservation($reservation_id) {
+        global $conn;
+
+        $sql = "DELETE FROM `prenotazioni` WHERE `cod_prenotazione` = '%s';";
+        return $conn->query(sprintf($sql, $reservation_id));
+    }
+
     function create_reservation($customer, $date, $time, $number_of_people, $notes = '') {
         global $conn;
 
@@ -93,38 +100,64 @@
         VALUES ('%s', '%s', '%s', '%s', 1);";
         $conn->query(sprintf($sql, $reservation_id, $customer, $number_of_people, $notes));
 
+        // Ricerca in tutte le sale
+        $dining_room = '%';
+        $dining_rooms = array();
+        $i = 0;
+        
         while ($number_of_people > 0) {
-            echo "num people: " . $number_of_people . "<br>";
-            $table = get_free_table($number_of_people);
-
-            // Controlla disponibilità tavoli
+            //echo "num people: " . $number_of_people . "   " . $dining_room . " <br>";
+            $table = get_free_table($number_of_people, $dining_room);
+            
+            // Controlla disponibilità tavoli nella sala
             if (!$table) {
-                echo "table false<br>";
-                // cancella tutti i records riferiti a quella prenot
-                $sql = "DELETE FROM `prenotazioni` WHERE `cod_prenotazione` = '%s';";
-                $conn->query(sprintf($sql, $reservation_id));
-                echo sprintf($sql, $reservation_id) . "<br>";
-                echo $conn->error . "<br>";
+
+                // Cambia sala se possibile
+                if ($dining_room != '%' && $i < count($dining_rooms)) {
+                    //echo "cambio sala...";
+                    $dining_room = $dining_rooms[$i++]['codice_sala']; 
+                    continue;
+                }
+
+                // Rimuovi prenotazione se non ci sono abbastanza posti in tutto il ristorante
+                delete_reservation($reservation_id);
                 break;
             }
 
-            // prenota tavolo
-            $sql = "INSERT INTO `tavoliprenotati` (`cod_prenotazione`, `numero_tavolo`, `data`) 
-            VALUES ('%s', '%s', '%s');";
-            $conn->query(sprintf($sql, $reservation_id, $table['numero_tavolo'], $date));
+            // Memorizza la sala dell'ultimo tavolo
+            $dining_room = $table['sala'];
 
-            // decrementa numero persone
+            // Conserva le altre sale per eventuali cicli (se non ci sono posti in una sala, controlla che siano
+            // disponibili in un'altra)
+            if ($i == 0)
+                $dining_rooms = get_dining_rooms_except($dining_room);
+
+            // Prenota tavolo
+            book_table($reservation_id, $table['numero_tavolo'], $date);
+
+            // Decrementa numero persone in attesa di trovare un posto
             $number_of_people -= $table['n_posti'];
         }
     }
 
-    function get_free_table($number_of_people) {
+    function book_table($reservation_id, $table_number, $date) {
         global $conn;
 
-        $sql = "SELECT * FROM `tavoli` WHERE `numero_tavolo` NOT IN (SELECT `numero_tavolo` FROM `tavoliprenotati`) ORDER BY `n_posti` ASC;";
-        $result = $conn->query($sql);
-        $table_array = to_array($result);
+        $sql = "INSERT INTO `tavoliprenotati` (`cod_prenotazione`, `numero_tavolo`, `data`) 
+        VALUES ('%s', '%s', '%s');";
         
+        return $conn->query(sprintf($sql, $reservation_id, $table_number, $date));
+    }
+
+    function get_free_table($number_of_people, $dining_room_id) {
+        global $conn;
+
+        $sql = "SELECT * FROM `tavoli` WHERE `numero_tavolo` NOT IN (SELECT `numero_tavolo` FROM `tavoliprenotati`) 
+        AND `sala` LIKE '%s' ORDER BY `n_posti` ASC;";
+        //echo "free table sql: " . sprintf($sql, $dining_room_id) . "<br>";
+        $result = $conn->query(sprintf($sql, $dining_room_id));
+        $table_array = to_array($result);
+        //echo "result sql: " . var_dump($table_array) . "<br><br>";
         //return json_encode($table_array);
         if (!$table_array) 
             return false;
@@ -158,4 +191,16 @@
         } */
     }
 
+    function get_dining_rooms_except($room) {
+        global $conn;
+
+        $sql = "SELECT * FROM `sale` WHERE `codice_sala` <> '%s';";
+        return to_array($conn->query(sprintf($sql, $room)));
+    }
+
+    function left_shift($arr, $times = 1) {
+        $times = $times % count($arr);
+        $other_half = array_splice($arr, 0, $times);
+        return array_merge($arr, $other_half);
+    }
  

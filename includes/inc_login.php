@@ -1,5 +1,5 @@
 <?php
-    require 'inc_functions.php';
+    require 'functions/inc_accounts.php';
 
     if (isset($_POST['submit'])) {
         $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);

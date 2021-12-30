@@ -1,6 +1,5 @@
 <?php
-    require 'inc_nodirect.php';
-    require 'inc_functions.php';
+    require 'functions/inc_accounts.php';
 
     if (true) {
         $username = 'abc';

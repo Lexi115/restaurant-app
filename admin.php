@@ -7,6 +7,7 @@
     <title>Admin</title>
 </head>
 <body>
+    <script src="js/general.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>

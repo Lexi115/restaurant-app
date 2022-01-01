@@ -7,7 +7,7 @@
 
         // Verifica esistenza dell'utente
         $user = get_users($username);
-        if (!$user) {
+        if (empty($user)) {
             die("Utente non trovato");
         }
 

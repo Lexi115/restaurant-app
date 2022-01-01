@@ -1,11 +1,11 @@
 <?php
-    require __DIR__ . '/../inc_database.php';
-    require 'inc_general.php';
+    require_once __DIR__ . '/../inc_database.php';
+    require_once 'inc_general.php';
     
     function customer_exists($fiscal_code) {
         global $conn;
 
-        $sql = "SELECT `cf` FROM `clienti` WHERE `cf` = '%s';";
+        $sql = "SELECT `cf_cliente` FROM `clienti` WHERE `cf_cliente` = '%s';";
         return ($conn->query(sprintf($sql, $fiscal_code)))->num_rows > 0;
     }
 
@@ -20,7 +20,7 @@
             $phone_number = $conn->real_escape_string($phone_number);
             $address = $conn->real_escape_string($address);
 
-            $sql = "INSERT INTO `clienti` (`cf`, `cognome`, `nome`, `telefono`, `indirizzo`) 
+            $sql = "INSERT INTO `clienti` (`cf_cliente`, `cognome`, `nome`, `telefono`, `indirizzo`) 
             VALUES ('%s', '%s', '%s', '%s', '%s');";
 
             return $conn->query(sprintf($sql, $fiscal_code, $last_name, $first_name, $phone_number, $address));
@@ -36,18 +36,18 @@
         return $conn->query(sprintf($sql, $reservation_id));
     }
 
-    function create_reservation($customer, $date, $time, $number_of_people, $notes = '') {
+    function create_reservation($fiscal_code, $date, $time, $number_of_people, $notes = '') {
         global $conn;
 
-        $customer = $conn->real_escape_string($customer);
+        $fiscal_code = $conn->real_escape_string($fiscal_code);
         $date = $conn->real_escape_string($date) . ' ' . $conn->real_escape_string($time) . ':00';
         $number_of_people = $conn->real_escape_string($number_of_people);
         $notes = $conn->real_escape_string($notes);
         $reservation_id = bin2hex(random_bytes(5));
 
-        $sql = "INSERT INTO `prenotazioni` (`cod_prenotazione`, `cf_cliente`, `n_persone`, `note_aggiuntive`, `status`) 
-        VALUES ('%s', '%s', '%s', '%s', 1);";
-        $conn->query(sprintf($sql, $reservation_id, $customer, $number_of_people, $notes));
+        $sql = "INSERT INTO `prenotazioni` (`cod_prenotazione`, `cf_cliente`, `data`, `n_persone`, `note_aggiuntive`, `status`) 
+        VALUES ('%s', '%s', '%s', '%s', '%s', 1);";
+        $conn->query(sprintf($sql, $reservation_id, $fiscal_code, $date, $number_of_people, $notes));
 
         // Ricerca in tutte le sale
         $dining_room = '%';
@@ -80,20 +80,39 @@
                 $dining_rooms = get_dining_rooms_except($dining_room);
 
             // Prenota tavolo
-            book_table($reservation_id, $table['numero_tavolo'], $date);
+            book_table($reservation_id, $table['numero_tavolo']);
 
             // Decrementa numero persone in attesa di trovare un posto
             $number_of_people -= $table['n_posti'];
         }
     }
 
-    function book_table($reservation_id, $table_number, $date) {
+    function get_reservations($status, $rows, $page, $columns = '*') {
         global $conn;
 
-        $sql = "INSERT INTO `tavoliprenotati` (`cod_prenotazione`, `numero_tavolo`, `data`) 
-        VALUES ('%s', '%s', '%s');";
+        $sql = "SELECT %s FROM `prenotazioni` INNER JOIN `clienti` USING (`cf_cliente`) 
+        INNER JOIN `statusprenotazione` USING (`cod_status`) WHERE `cod_status` LIKE '%s' LIMIT %s OFFSET %s;";
+        $arr = to_array($conn->query(sprintf($sql, $columns, $status, $rows, $rows * ($page - 1))));
+
+        foreach ($arr as &$element) {
+            $sql = "SELECT `numero_tavolo` FROM `tavoliprenotati` WHERE `cod_prenotazione` = '%s';";
+            $element['tavoli_assegnati'] = to_array($conn->query(sprintf($sql, $element['cod_prenotazione'])), 'numero_tavolo');
+        }
+        unset($element);
+
+        $sql = "SELECT COUNT(`%s`) AS `count` FROM `prenotazioni`;";
+        $count_arr = to_array($conn->query(sprintf($sql, 'cod_prenotazione')), 'count');
+
+        return array($count_arr, $arr);
+    }
+
+    function book_table($reservation_id, $table_number) {
+        global $conn;
+
+        $sql = "INSERT INTO `tavoliprenotati` (`cod_prenotazione`, `numero_tavolo`) 
+        VALUES ('%s', '%s');";
         
-        return $conn->query(sprintf($sql, $reservation_id, $table_number, $date));
+        return $conn->query(sprintf($sql, $reservation_id, $table_number));
     }
 
     function get_free_table($number_of_people, $date, $dining_room_id) {
@@ -101,14 +120,15 @@
         $date_offset = 3;
 
         $sql = "SELECT * FROM `tavoli` WHERE `numero_tavolo` NOT IN (SELECT `numero_tavolo` FROM `tavoliprenotati` 
-        WHERE `data` > '%s' AND `data` < '%s') AND `sala` LIKE '%s' ORDER BY `n_posti` ASC;";
+        INNER JOIN `prenotazioni` USING (`cod_prenotazione`) WHERE `data` > '%s' AND `data` < '%s') 
+        AND `sala` LIKE '%s' ORDER BY `n_posti` ASC;";
 
         $result = $conn->query(sprintf($sql, date_hour_offset($date, -$date_offset), 
         date_hour_offset($date, $date_offset), $dining_room_id));
         
         $table_array = to_array($result);
 
-        if (!$table_array) 
+        if (empty($table_array)) 
             return false;
 
         return $table_array[get_table_index_for($number_of_people, $table_array)];

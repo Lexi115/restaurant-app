@@ -1,6 +1,6 @@
 <?php
-    require __DIR__ . '/../inc_database.php';
-    require 'inc_general.php';
+    require_once __DIR__ . '/../inc_database.php';
+    require_once 'inc_general.php';
     
     function get_users($username, $token = '', $group = '', $columns = '*', $limit = 5, $page = 0) {
         global $conn;

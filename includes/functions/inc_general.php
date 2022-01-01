@@ -1,16 +1,21 @@
 <?php
-    function to_array($query_result) {
+    function to_array($query_result, $direct_access = '') {
+        $arr = array();
+
         if ($query_result->num_rows > 0) {
-            $arr = array();
+            
+            if (strlen($direct_access) > 0)
+                while ($row = $query_result->fetch_assoc()) {
+                    array_push($arr, $row[$direct_access]);
+                }
+            else
+                while ($row = $query_result->fetch_assoc()) {
+                    array_push($arr, $row);
+                }
 
-            while ($row = $query_result->fetch_assoc()) {
-                array_push($arr, $row);
-            }
-
-            return $arr;
-        } else {
-            return false;
         }
+
+        return $arr;
     }
 
     function date_hour_offset($date, $offset) {

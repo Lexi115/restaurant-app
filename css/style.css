@@ -6,3 +6,7 @@ div.card:hover {
     background-color: gray;
     cursor: pointer;
 }
+
+.hidden {
+    display: none;
+}

@@ -1,6 +1,7 @@
 var listContainer;
 var paginationElement;
-var currentPage = 1, rows = 1;
+var currentPage = 1, rows = 3;
+const editFormUrl = location.href + '/../../edit_forms/edit_reservations.php';
 
 function displayList(records, container) {
     container.innerHTML = '';
@@ -17,7 +18,7 @@ function createCard(record) {
 
     // Intestazione
     let cardHeader = document.createElement('h2');
-    cardHeader.innerHTML = '-V- ' + record['cod_prenotazione'];
+    cardHeader.innerHTML = 'P. ' + card.id;
 
     // Corpo con informazioni
     let cardBody = document.createElement('p');
@@ -28,6 +29,10 @@ function createCard(record) {
 
     card.appendChild(cardHeader);
     card.appendChild(cardBody);
+
+    card.onclick = function () {
+        location.href = editFormUrl + '?id=' + card.id;
+    }
     return card;
 }
 
@@ -84,6 +89,9 @@ function displayPageButtons(totalPages, container) {
 
 function goToPage(page = 1, status = 1) {
     getReservations(page, rows, status).then(records => {
+        if (page != 1 && !records[1].length)
+            return goToPage(1, status);
+            
         currentPage = page;
 
         displayList(records[1], listContainer);
@@ -92,9 +100,6 @@ function goToPage(page = 1, status = 1) {
         
     });
 }
-
-
-
 
 async function getReservations(page, rows, status = '%') {
     var params = 'q=reservations&page=' + page + '&rows=' + rows + '&status=' + status;

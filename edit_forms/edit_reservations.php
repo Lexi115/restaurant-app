@@ -5,7 +5,6 @@
 
     require_once __DIR__ . '/../includes/functions/inc_reservations.php';
     $reservation = get_reservations($_GET['id'], '%');
-
     if (empty($reservation)) {
         die("ID non valido");
     }
@@ -22,7 +21,7 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <form action="../api/api_edit_reservation.php" method="post">
+    <form action="../api/api_set.php?q=reservations" method="post">
         <input type="text" name="id" value="<?php echo $reservation['cod_prenotazione']; ?>" readonly>
         <input type="text" name="cf" placeholder="Codice Fiscale" value="<?php echo $reservation['cf_cliente']; ?>" required>
         <input type="text" name="cognome" placeholder="Cognome" value="<?php echo $reservation['cognome']; ?>" required>
@@ -33,16 +32,25 @@
         <input type="time" name="ora" placeholder="Ora" value="<?php echo $date_time[1]; ?>" required>
         <input type="number" name="n_persone" placeholder="Numero persone" value="<?php echo $reservation['n_persone']; ?>" required>
         <select name="status">
-            <option value="0">Confermata</option>
-            <option value="1">In attesa di revisione</option>
-            <option value="2">Disdetta</option>
+            <?php 
+                $states = get_reservation_states(); 
+                foreach ($states as $s) {
+                    $selected = $s['cod_status'] == $reservation['cod_status'] ? 'selected' : '';
+                    echo '<option value="' . $s['cod_status'] . '" ' . $selected . '>' . $s['descrizione_status'] . '</option>';
+                }
+            ?>
         </select>
+        <div id="tables-list-container"></div>
+        <input class="hidden" type="text" name="tavoli_assegnati" id="tables-json-string" value='<?php echo json_encode($reservation['tavoli_assegnati']); ?>'>
         <textarea name="note_aggiuntive" placeholder="Note"><?php echo $reservation['note_aggiuntive']; ?></textarea>
         <button type="submit" name="submit">VAI</button>
     </form>
-    <form action="../api/api_delete_reservation.php" method="post">
+    <form action="../api/api_delete.php?q=reservations" method="post">
         <input class="hidden" type="text" name="id" value="<?php echo $reservation['cod_prenotazione']; ?>" readonly>
-        <button type="submit" name="delete">RIMUOVI</button>
+        <button type="submit">RIMUOVI</button>
     </form>
+
+    
+    <script src="../js/edit_reservations.js"></script>
 </body>
 </html>

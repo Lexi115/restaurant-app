@@ -1,6 +1,7 @@
 <?php
     require_once __DIR__ . '/../inc_database.php';
     require_once 'inc_general.php';
+    require_once 'inc_tables.php';
     
     function customer_exists($fiscal_code) {
         global $conn;
@@ -127,64 +128,16 @@
         $arr = to_array($conn->query(sprintf($sql, $columns, $id, $status, $rows, $rows * ($page - 1))));
 
         foreach ($arr as &$element) {
-            $sql = "SELECT `numero_tavolo` FROM `tavoliprenotati` WHERE `cod_prenotazione` = '%s';";
-            $element['tavoli_assegnati'] = to_array($conn->query(sprintf($sql, $element['cod_prenotazione'])), 'numero_tavolo');
+            $element['tavoli_assegnati'] = get_booked_tables($id);
         }
         unset($element);
 
         return $arr;
     }
 
-    function get_reservations_count($status = '%') {
+    function get_reservation_states() {
         global $conn;
 
-        $sql = "SELECT COUNT(`%s`) AS `count` FROM `prenotazioni` WHERE `cod_status` LIKE '%s';";
-        $result = $conn->query(sprintf($sql, 'cod_prenotazione', $status));
-        return intval($result->fetch_assoc()['count']);
-    }
-
-    function book_table($reservation_id, $table_number) {
-        global $conn;
-
-        $sql = "INSERT INTO `tavoliprenotati` (`cod_prenotazione`, `numero_tavolo`) 
-        VALUES ('%s', '%s');";
-        
-        return $conn->query(sprintf($sql, $reservation_id, $table_number));
-    }
-
-    function get_free_table($number_of_people, $date, $dining_room_id) {
-        global $conn;
-        $date_offset = 3;
-
-        $sql = "SELECT * FROM `tavoli` WHERE `numero_tavolo` NOT IN (SELECT `numero_tavolo` FROM `tavoliprenotati` 
-        INNER JOIN `prenotazioni` USING (`cod_prenotazione`) WHERE `data` > '%s' AND `data` < '%s') 
-        AND `sala` LIKE '%s' ORDER BY `n_posti` ASC;";
-
-        $result = $conn->query(sprintf($sql, date_hour_offset($date, -$date_offset), 
-        date_hour_offset($date, $date_offset), $dining_room_id));
-        
-        $table_array = to_array($result);
-
-        if (empty($table_array)) 
-            return false;
-
-        return $table_array[get_table_index_for($number_of_people, $table_array)];
-    }
-
-    function get_table_index_for($number_of_people, $table_array) {
-        $i = 0;
-        $length = count($table_array);
-
-        while ($i < $length && $number_of_people > $table_array[$i]['n_posti']) {
-            $i++;
-        }
-
-        return ($i == $length) ? $i - 1 : $i;
-    }
-
-    function get_dining_rooms_except($room) {
-        global $conn;
-
-        $sql = "SELECT * FROM `sale` WHERE `codice_sala` <> '%s';";
-        return to_array($conn->query(sprintf($sql, $room)));
+        $sql = "SELECT * FROM `statusprenotazione`;";
+        return to_array($conn->query($sql));
     }

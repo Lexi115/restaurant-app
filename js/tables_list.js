@@ -1,20 +1,18 @@
-const editFormUrl = location.href + '/../edit_forms/edit_reservations.php';
+const editFormUrl = location.href + '/../edit_forms/edit_tables.php';
 
 function createCard(record) {
     let card = document.createElement('div');
     card.classList.add('card');
-    card.id = record['cod_prenotazione'];
+    card.id = record['numero_tavolo'];
 
     // Intestazione
     let cardHeader = document.createElement('h2');
-    cardHeader.innerHTML = 'P. ' + card.id;
+    cardHeader.innerHTML = 'T. ' + card.id;
 
     // Corpo con informazioni
     let cardBody = document.createElement('p');
-    cardBody.appendChild(createCardBodyElement(record['descrizione_status']));
-    cardBody.appendChild(createCardBodyElement(record['cognome'] + ' ' + record['nome']));
-    cardBody.appendChild(createCardBodyElement(record['data']));
-    cardBody.appendChild(createCardBodyElement('Numero persone: ' + record['n_persone']));
+    cardBody.appendChild(createCardBodyElement(record['nome_sala']));
+    cardBody.appendChild(createCardBodyElement('Numero posti: ' + record['n_posti']));
 
     card.appendChild(cardHeader);
     card.appendChild(cardBody);
@@ -25,8 +23,8 @@ function createCard(record) {
     return card;
 }
 
-async function getReservations(page, rows, status = '%') {
-    var params = 'q=reservations&page=' + page + '&rows=' + rows + '&status=' + status;
+async function getTables(page, rows, room = '%') {
+    var params = 'q=tables&page=' + page + '&rows=' + rows + '&room=' + room;
     const response = await fetch('api/api_get.php?' + params);
     return await response.json();
 }
@@ -35,5 +33,5 @@ window.onload = function () {
     listContainer = document.querySelector('#list-container');
     paginationElement = document.querySelector('#pagination-element');
 
-    goToPage(getReservations);
+    goToPage(getTables, 1);
 }

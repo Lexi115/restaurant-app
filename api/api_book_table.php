@@ -1,5 +1,5 @@
 <?php
-    require __DIR__ . '/../includes/functions/inc_reservations.php';
+    require_once __DIR__ . '/../includes/functions/inc_reservations.php';
 
     if (isset($_POST['submit'])) {
         $fiscal_code = $_POST['cf'];

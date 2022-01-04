@@ -26,7 +26,7 @@
         <input type="text" name="n_posti" placeholder="Numero posti" value="<?php echo $table['n_posti']; ?>" required>
         <select name="sala">
             <?php 
-                $rooms = get_dining_rooms(); 
+                $rooms = get('sale'); 
                 foreach ($rooms as $r) {
                     $selected = $r['cod_sala'] == $table['cod_sala'] ? 'selected' : '';
                     echo '<option value="' . $r['cod_sala'] . '" ' . $selected . '>' . $r['nome_sala'] . '</option>';

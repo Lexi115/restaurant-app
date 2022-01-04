@@ -33,7 +33,7 @@
         <input type="number" name="n_persone" placeholder="Numero persone" value="<?php echo $reservation['n_persone']; ?>" required>
         <select name="status">
             <?php 
-                $states = get_reservation_states(); 
+                $states = get('statusprenotazione');
                 foreach ($states as $s) {
                     $selected = $s['cod_status'] == $reservation['cod_status'] ? 'selected' : '';
                     echo '<option value="' . $s['cod_status'] . '" ' . $selected . '>' . $s['descrizione_status'] . '</option>';
@@ -51,6 +51,6 @@
     </form>
 
     
-    <script src="../js/edit_reservations.js"></script>
+    <script src="../js/edit_reservation.js"></script>
 </body>
 </html>

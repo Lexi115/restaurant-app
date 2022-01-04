@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="api/api_book_table.php" method="post">
+    <form action="api/api_set.php?q=reservations" method="post">
         <input type="text" name="cf" placeholder="Codice Fiscale" required>
         <input type="text" name="cognome" placeholder="Cognome" required>
         <input type="text" name="nome" placeholder="Nome" required>
@@ -17,7 +17,7 @@
         <input type="time" name="ora" placeholder="Ora" required>
         <input type="number" name="n_persone" placeholder="Numero persone" required>
         <textarea name="note_aggiuntive" placeholder="Note"></textarea>
-        <button type="submit" name="submit">Vai</button>
+        <button type="submit">Vai</button>
     </form>
 </body>
 </html>

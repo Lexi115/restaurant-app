@@ -1,4 +1,4 @@
-const editFormUrl = location.href + '/../edit_forms/edit_tables.php';
+const editFormUrl = location.href + '/../edit_forms/edit_table.php';
 
 function createCard(record) {
     let card = document.createElement('div');

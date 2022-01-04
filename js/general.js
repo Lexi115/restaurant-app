@@ -83,7 +83,7 @@ function displayPageButtons(totalPages, container, callback) {
     let searchButton = document.createElement('button');
     searchButton.innerHTML = 'VAI';
     searchButton.onclick = function () {
-        let page = parseInt(pageInput.value);
+        let page = Math.abs(parseInt(pageInput.value));
         goToPage(callback, page > totalPages ? 1 : page);
     }
 

@@ -37,3 +37,10 @@
         $result = $conn->query(sprintf($sql, $table, $checked_column, $value));
         return intval($result->fetch_assoc()['count']);
     }
+
+    function get($table) {
+        global $conn;
+
+        $sql = "SELECT * FROM `%s`;";
+        return to_array($conn->query(sprintf($sql, $table)));
+    }

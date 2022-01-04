@@ -30,12 +30,29 @@
                 $records = get_tables($id, $room, $rows, $page, $columns);
                 $arr = array($count, $records);
                 break;
+
+            case 'rooms':
+                $type = isset($_GET['type']) ? $_GET['type'] : '%';
+                $columns = isset($_GET['columns']) ? $_GET['columns'] : '*';
+                $page = isset($_GET['page']) ? $_GET['page'] : '1';
+                $id = isset($_GET['id']) ? $_GET['id'] : '%';
+                $rows = isset($_GET['rows']) ? $_GET['rows'] : 5;
+                
+                $count = get_count('sale', 'cod_tipo_sala', $type);
+                $records = get_dining_rooms($id, $type, $rows, $page, $columns);
+                $arr = array($count, $records);
+                break;
             
             case 'accounts':
                 $group = isset($_GET['group']) ? $_GET['group'] : '%';
                 $columns = isset($_GET['columns']) ? $_GET['columns'] : '*';
+                $page = isset($_GET['page']) ? $_GET['page'] : '1';
+                $id = isset($_GET['id']) ? $_GET['id'] : '%';
+                $rows = isset($_GET['rows']) ? $_GET['rows'] : 5;
 
-                $arr = get_users('', '', $group, $columns);
+                $count = get_count('accounts', 'cod_gruppo', $group);
+                $records = get_accounts('', $id, $group, $rows, $page, $columns);
+                $arr = array($count, $records);
                 break;
 
         }

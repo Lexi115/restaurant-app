@@ -1,20 +1,17 @@
-const editFormUrl = location.href + '/../edit_forms/edit_reservation.php';
+const editFormUrl = location.href + '/../edit_forms/edit_account.php';
 
 function createCard(record) {
     let card = document.createElement('div');
     card.classList.add('card');
-    card.id = record['cod_prenotazione'];
+    card.id = record['username'];
 
     // Intestazione
     let cardHeader = document.createElement('h2');
-    cardHeader.innerHTML = 'P. ' + card.id;
+    cardHeader.innerHTML = 'A. ' + card.id;
 
     // Corpo con informazioni
     let cardBody = document.createElement('p');
-    cardBody.appendChild(createCardBodyElement(record['descrizione_status']));
-    cardBody.appendChild(createCardBodyElement(record['cognome'] + ' ' + record['nome']));
-    cardBody.appendChild(createCardBodyElement(record['data']));
-    cardBody.appendChild(createCardBodyElement('Numero persone: ' + record['n_persone']));
+    cardBody.appendChild(createCardBodyElement(record['nome_gruppo']));
 
     card.appendChild(cardHeader);
     card.appendChild(cardBody);
@@ -25,8 +22,8 @@ function createCard(record) {
     return card;
 }
 
-async function getReservations(page, rows, status = '%') {
-    var params = 'q=reservations&page=' + page + '&rows=' + rows + '&status=' + status;
+async function getAccounts(page, rows, group = '%') {
+    var params = 'q=accounts&page=' + page + '&rows=' + rows + '&group=' + group;
     const response = await fetch('api/api_get.php?' + params);
     return await response.json();
 }
@@ -35,5 +32,5 @@ window.onload = function () {
     listContainer = document.querySelector('#list-container');
     paginationElement = document.querySelector('#pagination-element');
 
-    goToPage(getReservations);
+    goToPage(getAccounts);
 }

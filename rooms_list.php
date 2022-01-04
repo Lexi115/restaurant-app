@@ -12,6 +12,6 @@
     <div id="list-container"></div>
 
     <script src="js/general.js"></script>
-    <script src="js/reservations_list.js"></script>
+    <script src="js/rooms_list.js"></script>
 </body>
 </html>

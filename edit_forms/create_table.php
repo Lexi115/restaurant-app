@@ -10,23 +10,18 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <form action="../api/api_edit_table.php" method="post">
-        <input type="text" name="id" required>
+    <form action="../api/api_set.php?q=tables" method="post">
+        <input type="number" name="id" pattern="[0-9]+" placeholder="Numero tavolo" required>
         <input type="text" name="n_posti" placeholder="Numero posti" required>
         <select name="sala">
             <?php 
-                $rooms = get_dining_rooms(); 
+                $rooms = get('sale'); 
                 foreach ($rooms as $r) {
-                    $selected = $r['cod_sala'] == $table['cod_sala'] ? 'selected' : '';
-                    echo '<option value="' . $r['cod_sala'] . '" ' . $selected . '>' . $r['nome_sala'] . '</option>';
+                    echo '<option value="' . $r['cod_sala'] . '">' . $r['nome_sala'] . '</option>';
                 }
             ?>
         </select>
         <button type="submit" name="submit">VAI</button>
-    </form>
-    <form action="../api/api_delete.php?q=table" method="post">
-        <input class="hidden" type="text" name="id" value="<?php echo $table['numero_tavolo']; ?>" readonly>
-        <button type="submit">RIMUOVI</button>
     </form>
 </body>
 </html>

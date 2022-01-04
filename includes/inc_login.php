@@ -6,8 +6,8 @@
         $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
 
         // Verifica esistenza dell'utente
-        $user = get_users($username);
-        if (!$user) {
+        $user = get_accounts($username);
+        if (empty($user)) {
             die("Utente non trovato");
         }
 

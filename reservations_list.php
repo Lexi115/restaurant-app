@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    $accountsFilePath = 'includes/functions/inc_accounts.php';
+    require_once 'includes/inc_auth.php';
+    define('RESERVATIONS', 0);
+
+    if (!isset($_SESSION['account']) || !has_permission('mostra_prenotazioni', $_SESSION['account']['cod_gruppo'])) {
+        header('Location: index.php');
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +18,9 @@
     <title>Document</title>
 </head>
 <body>
+    <?php 
+        require_once 'includes/inc_header.php';
+    ?>
     <div id="pagination-element"></div>
     <div id="list-container"></div>
 

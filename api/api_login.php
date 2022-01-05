@@ -1,5 +1,5 @@
 <?php
-    require 'functions/inc_accounts.php';
+    require __DIR__ . '/../includes/functions/inc_accounts.php';
 
     if (isset($_POST['submit'])) {
         $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
@@ -19,8 +19,9 @@
         }
 
         session_start();
-        $_SESSION['user'] = $user;
-        echo var_dump($_SESSION['user']);
+        $_SESSION['account'] = $user;
+        setcookie('token_accesso', $user['token_accesso'], time() + 86400, '/');
+        header('Location: ../index.php');
     }
 
     exit();

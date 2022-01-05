@@ -1,6 +1,3 @@
-<?php
-    require_once __DIR__ . '/../includes/functions/inc_accounts.php';
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +7,9 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+    <?php 
+        require_once '../includes/inc_header.php';
+    ?>
     <form action="../api/api_set.php?q=accounts" method="post">
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>

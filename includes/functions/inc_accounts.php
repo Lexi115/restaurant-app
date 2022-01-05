@@ -66,4 +66,13 @@
 
         
     }
+
+    function has_permission($permission, $group_id) {
+        global $conn;
+
+        $sql = "SELECT * FROM `gruppi` INNER JOIN `permessi` USING (`cod_set_permessi`) 
+        WHERE `cod_gruppo` = '%s';";
+        $permission_value = $conn->query(sprintf($sql, $group_id))->fetch_assoc()[$permission];
+        return $permission_value == 1;
+    }
     

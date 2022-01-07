@@ -1,5 +1,6 @@
 <?php
-    require_once __DIR__ . '/../includes/functions/inc_accounts.php';
+    session_start();
+    require_once __DIR__ . '/../includes/inc_auth.php';
     require_once __DIR__ . '/../includes/functions/inc_reservations.php';
     
     $arr = array();
@@ -8,6 +9,10 @@
         switch ($_GET['q']) {
 
             case 'reservations':
+                if (!isset($_SESSION['account']) || !has_permission('mostra_prenotazioni', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: ../errors/forbidden.php');
+                    exit();
+                }
                 $status = isset($_GET['status']) ? $_GET['status'] : '%';
                 $columns = isset($_GET['columns']) ? $_GET['columns'] : '*';
                 $page = isset($_GET['page']) ? $_GET['page'] : '1';
@@ -20,6 +25,11 @@
                 break;
 
             case 'tables':
+                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: ../errors/forbidden.php');
+                    exit();
+                }
+
                 $room = isset($_GET['room']) ? $_GET['room'] : '%';
                 $columns = isset($_GET['columns']) ? $_GET['columns'] : '*';
                 $page = isset($_GET['page']) ? $_GET['page'] : '1';
@@ -32,6 +42,11 @@
                 break;
 
             case 'rooms':
+                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: ../errors/forbidden.php');
+                    exit();
+                }
+
                 $type = isset($_GET['type']) ? $_GET['type'] : '%';
                 $columns = isset($_GET['columns']) ? $_GET['columns'] : '*';
                 $page = isset($_GET['page']) ? $_GET['page'] : '1';
@@ -44,6 +59,11 @@
                 break;
             
             case 'accounts':
+                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: ../errors/forbidden.php');
+                    exit();
+                }
+
                 $group = isset($_GET['group']) ? $_GET['group'] : '%';
                 $columns = isset($_GET['columns']) ? $_GET['columns'] : '*';
                 $page = isset($_GET['page']) ? $_GET['page'] : '1';

@@ -1,9 +1,14 @@
 <?php
+    require_once __DIR__ . '/../includes/inc_auth.php';
+    if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+        header('Location: ../errors/forbidden.php');
+        exit();
+    }
+
     if (!isset($_GET['id'])) {
         die("ID mancante");
     }
 
-    require_once __DIR__ . '/../includes/inc_auth.php';
     require_once __DIR__ . '/../includes/functions/inc_tables.php';
     $table = get_tables($_GET['id'], '%');
 

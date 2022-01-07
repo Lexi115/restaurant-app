@@ -1,8 +1,6 @@
 <?php
     define('ROOT', $_SERVER['DOCUMENT_ROOT'] . '/restaurant-app/restaurant-app');
     require_once ROOT . '/includes/functions/inc_accounts.php';
-    
-    $logged_in = False;
 
     if (isset($_COOKIE['token_accesso'])) {
         $auth_token = $_COOKIE['token_accesso'];
@@ -10,7 +8,6 @@
 
         if (!empty($account)) {
             $_SESSION['account'] = $account[0];
-            $logged_in = True;
         }
     }
 ?>

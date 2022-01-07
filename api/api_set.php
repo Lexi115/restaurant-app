@@ -1,11 +1,16 @@
 <?php
     require_once __DIR__ . '/../includes/functions/inc_reservations.php';
-    require_once __DIR__ . '/../includes/functions/inc_accounts.php';
+    require_once __DIR__ . '/../includes/inc_auth.php';
 
     if (isset($_GET['q'])) {
         switch ($_GET['q']) {
 
             case 'reservations':
+                if (!isset($_SESSION['account']) || !has_permission('mostra_prenotazioni', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: errors/forbidden.php');
+                    exit();
+                }
+
                 $fiscal_code = $_POST['cf'];
                 $last_name = $_POST['cognome'];
                 $first_name = $_POST['nome'];
@@ -36,6 +41,11 @@
                 break;
 
             case 'tables':
+                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: errors/forbidden.php');
+                    exit();
+                }
+
                 $table_number = $_POST['id'];
                 $number_of_seats = $_POST['n_posti'];
                 $room = $_POST['sala'];
@@ -49,6 +59,11 @@
                 break;
 
             case 'rooms':
+                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: errors/forbidden.php');
+                    exit();
+                }
+
                 $room_name = $_POST['nome_sala'];
                 $room_type = $_POST['cod_tipo_sala'];
 
@@ -63,6 +78,11 @@
                 break;
                 
             case 'accounts':
+                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                    header('Location: errors/forbidden.php');
+                    exit();
+                }
+                
                 $username = $_POST['username'];
                 $password = $_POST['password'];
                 $group = $_POST['gruppo'];

@@ -25,6 +25,24 @@ input[type="number"] {
     width: 50px;
 }
 
+/* ----- Centered container ----- */
+div.center {
+    text-align: center;
+    display: block;
+}
+
+p.title {
+    font-weight: bold;
+    font-size: 100px;
+    margin: auto;
+    color: rgb(110, 14, 14);
+}
+
+p.subtitle {
+    font-weight: normal;
+    font-size: 50px;
+}
+
 /* ----- Card ----- */
 
 div.card {

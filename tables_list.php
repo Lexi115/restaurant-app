@@ -4,7 +4,8 @@
     define('TABLES', 0);
 
     if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
-        header('Location: index.php');
+        header('Location: errors/forbidden.php');
+        exit();
     }
 ?>
 <!DOCTYPE html>

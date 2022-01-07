@@ -2,6 +2,11 @@
     session_start();
     require_once __DIR__ . '/../includes/inc_auth.php';
     require_once __DIR__ . '/../includes/functions/inc_tables.php';
+
+    if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+        header('Location: ../errors/forbidden.php');
+        exit();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

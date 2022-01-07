@@ -112,7 +112,7 @@
                 $dining_rooms = get_dining_rooms_except($dining_room);
 
             // Prenota tavolo
-            book_table($reservation_id, $table['numero_tavolo']);
+            book_table($reservation_id, $table['n_tavolo']);
             
             // Decrementa numero persone in attesa di trovare un posto
             $number_of_people -= $table['n_posti'];

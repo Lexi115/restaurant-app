@@ -3,7 +3,8 @@
         die("ID mancante");
     }
 
-    require_once __DIR__ . '/../includes/functions/inc_accounts.php';
+    require_once __DIR__ . '/../includes/inc_auth.php';
+
     $account = get_accounts($_GET['id']);
     if (empty($account)) {
         die("ID non valido");
@@ -20,7 +21,11 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <form action="../api/api_set.php?q=accounts" method="post">
+    <?php 
+        require_once '../includes/inc_header.php';
+    ?>
+    <form class="form" action="../api/api_set.php?q=accounts" method="post">
+        <h1>Modifica Account</h1>
         <input class="hidden" type="text" name="id" value="<?php echo $account['token_accesso']; ?>" readonly>
         <input type="text" name="username" placeholder="Username" value="<?php echo $account['username']; ?>" required>
         <input type="password" name="password" placeholder="Nuova Password">
@@ -35,7 +40,7 @@
         </select>
         <button type="submit">VAI</button>
     </form>
-    <form action="../api/api_delete.php?q=accounts" method="post">
+    <form class="form" action="../api/api_delete.php?q=accounts" method="post">
         <input class="hidden" type="text" name="id" value="<?php echo $account['username']; ?>" readonly>
         <button type="submit">RIMUOVI</button>
     </form>

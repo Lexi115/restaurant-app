@@ -1,3 +1,7 @@
+<?php
+    session_start();
+    require_once __DIR__ . '/../includes/inc_auth.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +14,8 @@
     <?php 
         require_once '../includes/inc_header.php';
     ?>
-    <form action="../api/api_set.php?q=accounts" method="post">
+    <form class="form" action="../api/api_set.php?q=accounts" method="post">
+        <h1>Nuovo Account</h1>
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
         <select name="gruppo">

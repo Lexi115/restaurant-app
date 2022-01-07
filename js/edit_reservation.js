@@ -21,8 +21,9 @@ function getListElement(json, index) {
     let listElement = document.createElement('li');
     listElement.id = 'table-' + json[index];
     
-    let deleteBtn = document.createElement('span');
-    deleteBtn.innerHTML = ' [X] ';
+    let deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.innerHTML = 'X';
     deleteBtn.onclick = function () {
         json.splice(index, 1);
         displayTablesList();
@@ -41,10 +42,12 @@ function getInputElement(json) {
     let wrapper = document.createElement('div');
 
     let inputElement = document.createElement('input');
+    inputElement.placeholder = 'Numero tavolo...';
     inputElement.type = 'number';
 
-    let addBtn = document.createElement('span');
-    addBtn.innerHTML = '[+]';
+    let addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.innerHTML = '+';
     addBtn.onclick = function () {
         let value = inputElement.value.replace(/\s+/g, '');
         if (value != '' && !json.includes(value)) {

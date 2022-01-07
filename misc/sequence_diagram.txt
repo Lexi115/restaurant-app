@@ -1,9 +1,9 @@
-title Prenotazione Tavolo
+title Prenotazione
 
 actor Utente
-Utente->Client: Click su "aggiungi tavolo"
-Client->Web Server: HTTP request (info tavolo)
-Web Server->DMBS Server: Query SQL
+Utente->Client: Click su "invia prenotazione"
+Client->Web Server: HTTP request (contenente informazioni utente)
+Web Server->DMBS Server: Insert query SQL
 DMBS Server->DMBS Server:
 DMBS Server->Web Server: Risultato query
 Web Server->Client: HTTP response (risultato operazione)

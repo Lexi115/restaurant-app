@@ -1,6 +1,5 @@
 <?php
     session_start();
-    $accountsFilePath = 'includes/functions/inc_accounts.php';
     require_once 'includes/inc_auth.php';
     define('LOGIN', 0);
 ?>
@@ -18,8 +17,8 @@
         require 'includes/inc_header.php';
     ?>
     <section>
-        <h1>Login</h1>
-        <form action="api/api_login.php" method="post">
+        <form class="form" action="api/api_login.php" method="post">
+            <h1>Login</h1>
             <input type="text" name="username" placeholder="Username">
             <input type="password" name="password" placeholder="Password">
             <button type="submit" name="submit">Vai</button>

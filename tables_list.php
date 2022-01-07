@@ -1,6 +1,5 @@
 <?php
     session_start();
-    $accountsFilePath = 'includes/functions/inc_accounts.php';
     require_once 'includes/inc_auth.php';
     define('TABLES', 0);
 

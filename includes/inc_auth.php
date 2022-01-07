@@ -1,5 +1,7 @@
 <?php
-    require_once $accountsFilePath;
+    define('ROOT', $_SERVER['DOCUMENT_ROOT'] . '/restaurant-app/restaurant-app');
+    require_once ROOT . '/includes/functions/inc_accounts.php';
+    
     $logged_in = False;
 
     if (isset($_COOKIE['token_accesso'])) {

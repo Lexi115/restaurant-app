@@ -83,8 +83,9 @@ function displayPageButtons(totalPages, container, callback) {
     let searchButton = document.createElement('button');
     searchButton.innerHTML = 'VAI';
     searchButton.onclick = function () {
-        let page = Math.abs(parseInt(pageInput.value));
-        goToPage(callback, page > totalPages ? 1 : page);
+        let page = parseInt(pageInput.value);
+        if (page <= 0 || page > totalPages) page = 1;
+        goToPage(callback, page);
     }
 
     container.appendChild(previousPageBtn);

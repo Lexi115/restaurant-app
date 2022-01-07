@@ -3,6 +3,7 @@
         die("ID mancante");
     }
 
+    require_once __DIR__ . '/../includes/inc_auth.php';
     require_once __DIR__ . '/../includes/functions/inc_reservations.php';
     $reservation = get_reservations($_GET['id'], '%');
     if (empty($reservation)) {
@@ -21,7 +22,11 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <form action="../api/api_set.php?q=reservations" method="post">
+    <?php 
+        require_once '../includes/inc_header.php';
+    ?>
+    <form class="form" action="../api/api_set.php?q=reservations" method="post">
+        <h1>Modifica Prenotazione</h1>
         <input type="text" name="id" value="<?php echo $reservation['cod_prenotazione']; ?>" readonly>
         <input type="text" name="cf" placeholder="Codice Fiscale" value="<?php echo $reservation['cf_cliente']; ?>" required>
         <input type="text" name="cognome" placeholder="Cognome" value="<?php echo $reservation['cognome']; ?>" required>
@@ -45,7 +50,7 @@
         <textarea name="note_aggiuntive" placeholder="Note"><?php echo $reservation['note_aggiuntive']; ?></textarea>
         <button type="submit" name="submit">VAI</button>
     </form>
-    <form action="../api/api_delete.php?q=reservations" method="post">
+    <form class="form" action="../api/api_delete.php?q=reservations" method="post">
         <input class="hidden" type="text" name="id" value="<?php echo $reservation['cod_prenotazione']; ?>" readonly>
         <button type="submit">RIMUOVI</button>
     </form>

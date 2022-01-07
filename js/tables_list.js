@@ -3,7 +3,7 @@ const editFormUrl = location.href + '/../edit_forms/edit_table.php';
 function createCard(record) {
     let card = document.createElement('div');
     card.classList.add('card');
-    card.id = record['numero_tavolo'];
+    card.id = record['n_tavolo'];
 
     // Intestazione
     let cardHeader = document.createElement('h2');

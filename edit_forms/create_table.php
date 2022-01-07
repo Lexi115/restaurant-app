@@ -1,4 +1,6 @@
 <?php
+    session_start();
+    require_once __DIR__ . '/../includes/inc_auth.php';
     require_once __DIR__ . '/../includes/functions/inc_tables.php';
 ?>
 <!DOCTYPE html>
@@ -10,7 +12,11 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <form action="../api/api_set.php?q=tables" method="post">
+    <?php 
+        require_once '../includes/inc_header.php';
+    ?>
+    <form class="form" action="../api/api_set.php?q=tables" method="post">
+        <h1>Nuovo Tavolo</h1>
         <input type="number" name="id" pattern="[0-9]+" placeholder="Numero tavolo" required>
         <input type="text" name="n_posti" placeholder="Numero posti" required>
         <select name="sala">

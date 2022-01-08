@@ -150,3 +150,18 @@ form.form button {
 form.form input.hidden {
     display: none;
 }
+
+/* ----- Alert ----- */
+span.alert {
+    text-align: center;
+    padding: 30px;
+    border-radius: 3px;
+    border-style: solid;
+    margin: auto;
+}
+
+span.err-alert {
+    background-color: rgb(255, 152, 152);
+    border-color: rgb(179, 102, 102);
+    color: rgb(114, 36, 36);
+}

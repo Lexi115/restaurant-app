@@ -1,7 +1,7 @@
 <?php
     session_start();
     require_once __DIR__ . '/../includes/inc_auth.php';
-    if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+    if (no_permission('admin')) {
         header('Location: ../errors/forbidden.php');
         exit();
     }
@@ -13,6 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <title>Crea Account</title>
 </head>
 <body>
     <?php 
@@ -22,7 +23,7 @@
         <h1>Nuovo Account</h1>
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
-        <select name="gruppo">
+        <select name="cod_gruppo">
             <?php 
                 $groups = get('gruppi'); 
                 foreach ($groups as $g) {

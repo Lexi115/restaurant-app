@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once 'includes/inc_auth.php';
+    require_once 'includes/inc_alerts.php';
     define('LOGIN', 0);
 ?>
 <!DOCTYPE html>
@@ -22,6 +23,11 @@
             <input type="text" name="username" placeholder="Username">
             <input type="password" name="password" placeholder="Password">
             <button type="submit" name="submit">Vai</button>
+            <?php 
+                if (isset($_GET['error'])) {
+                    print_alert($_GET['error']);
+                }
+            ?>
         </form>
     </section>
 </body>

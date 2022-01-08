@@ -1,1 +1,1 @@
-ErrorDocument 404 /restaurant-app/restaurant-app/errors/not_found.php
+ErrorDocument 404 /restaurant-app/errors/not_found.php

@@ -1,6 +1,6 @@
 <?php
-    define('ROOT', $_SERVER['DOCUMENT_ROOT'] . '/restaurant-app/restaurant-app');
-    require_once ROOT . '/includes/functions/inc_accounts.php';
+    $root_folder = '/restaurant-app';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $root_folder . '/includes/functions/inc_accounts.php';
 
     if (isset($_COOKIE['token_accesso'])) {
         $auth_token = $_COOKIE['token_accesso'];
@@ -9,5 +9,10 @@
         if (!empty($account)) {
             $_SESSION['account'] = $account[0];
         }
+    }
+
+    function no_permission($permission) {
+        return !isset($_SESSION['account']) || 
+        !has_permission($permission, $_SESSION['account']['cod_gruppo']);
     }
 ?>

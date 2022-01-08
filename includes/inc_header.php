@@ -2,8 +2,6 @@
     function page_is($page_name) {
         return defined($page_name) ? 'disabled' : '';
     }
-
-    $root_folder = '/restaurant-app/restaurant-app';
 ?>
 <!DOCTYPE html>
 <html lang="en">

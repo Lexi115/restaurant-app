@@ -8,14 +8,16 @@
         // Verifica esistenza dell'utente
         $user = get_accounts($username);
         if (empty($user)) {
-            die("Utente non trovato");
+            header('Location: ../login.php?error=invalid-user');
+            exit();
         }
 
         $user = $user[0];
 
         // Verifica password immessa con quella salvata nel database
         if (!password_verify($password, $user['password_hash'])) {
-            die("Pw non corretta");
+            header('Location: ../login.php?error=invalid-password');
+            exit();
         }
 
         session_start();

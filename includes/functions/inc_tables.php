@@ -79,16 +79,15 @@
 
         $sql = "SELECT * FROM `tavoli` WHERE `n_tavolo` NOT IN (SELECT `n_tavolo` FROM `tavoliprenotati` 
         INNER JOIN `prenotazioni` USING (`cod_prenotazione`) WHERE `data` > '%s' AND `data` < '%s') 
-        AND `sala` LIKE '%s' ORDER BY `n_posti` ASC;";
+        AND `cod_sala` LIKE '%s' ORDER BY `n_posti` ASC;";
 
         $result = $conn->query(sprintf($sql, date_hour_offset($date, -$date_offset), 
         date_hour_offset($date, $date_offset), $dining_room_id));
-        
-        $table_array = to_array($result);
 
-        if (empty($table_array)) 
+        if (!$result) 
             return false;
 
+        $table_array = to_array($result);
         return $table_array[get_table_index_for($number_of_people, $table_array)];
     }
 

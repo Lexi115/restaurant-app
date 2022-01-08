@@ -9,7 +9,7 @@
         switch ($_GET['q']) {
 
             case 'reservations':
-                if (!isset($_SESSION['account']) || !has_permission('mostra_prenotazioni', $_SESSION['account']['cod_gruppo'])) {
+                if (no_permission('mostra_prenotazioni')) {
                     header('Location: ../errors/forbidden.php');
                     exit();
                 }
@@ -25,7 +25,7 @@
                 break;
 
             case 'tables':
-                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                if (no_permission('admin')) {
                     header('Location: ../errors/forbidden.php');
                     exit();
                 }
@@ -42,7 +42,7 @@
                 break;
 
             case 'rooms':
-                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                if (no_permission('admin')) {
                     header('Location: ../errors/forbidden.php');
                     exit();
                 }
@@ -59,7 +59,7 @@
                 break;
             
             case 'accounts':
-                if (!isset($_SESSION['account']) || !has_permission('admin', $_SESSION['account']['cod_gruppo'])) {
+                if (no_permission('admin')) {
                     header('Location: ../errors/forbidden.php');
                     exit();
                 }

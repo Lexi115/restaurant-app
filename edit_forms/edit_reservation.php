@@ -25,6 +25,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <title>Modifica Prenotazione '<?php echo $_GET['id']; ?>'</title>
 </head>
 <body>
     <?php 
@@ -33,7 +34,7 @@
     <form class="form" action="../api/api_set.php?q=reservations" method="post">
         <h1>Modifica Prenotazione</h1>
         <input type="text" name="id" value="<?php echo $reservation['cod_prenotazione']; ?>" readonly>
-        <input type="text" name="cf" placeholder="Codice Fiscale" value="<?php echo $reservation['cf_cliente']; ?>" required>
+        <input type="text" name="cf" placeholder="Codice Fiscale" value="<?php echo $reservation['cf_cliente']; ?>" readonly>
         <input type="text" name="cognome" placeholder="Cognome" value="<?php echo $reservation['cognome']; ?>" required>
         <input type="text" name="nome" placeholder="Nome" value="<?php echo $reservation['nome']; ?>" required>
         <input type="tel" name="telefono" placeholder="Telefono" value="<?php echo $reservation['telefono']; ?>" required>
@@ -41,7 +42,7 @@
         <input type="date" name="data" placeholder="Data" value="<?php echo $date_time[0]; ?>" required>
         <input type="time" name="ora" placeholder="Ora" value="<?php echo $date_time[1]; ?>" required>
         <input type="number" name="n_persone" placeholder="Numero persone" value="<?php echo $reservation['n_persone']; ?>" required>
-        <select name="status">
+        <select name="cod_status">
             <?php 
                 $states = get('statusprenotazione');
                 foreach ($states as $s) {

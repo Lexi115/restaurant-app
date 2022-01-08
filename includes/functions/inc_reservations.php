@@ -64,6 +64,7 @@
 
         $sql = "UPDATE `prenotazioni` SET `cf_cliente` = '%s', `data` = '%s', `n_persone` = '%s', `note_aggiuntive` = '%s', 
         `cod_status` = %s WHERE `cod_prenotazione` = '%s';";
+
         return $conn->query(sprintf($sql, $fiscal_code, $date, $number_of_people, $notes, $status, $reservation_id));
     }
 
@@ -94,7 +95,7 @@
 
                 // Cambia sala se possibile
                 if ($dining_room != '%' && $i < count($dining_rooms)) {
-                    $dining_room = $dining_rooms[$i++]['codice_sala']; 
+                    $dining_room = $dining_rooms[$i++]['cod_sala']; 
                     continue;
                 }
 
@@ -104,7 +105,7 @@
             }
 
             // Memorizza la sala dell'ultimo tavolo
-            $dining_room = $table['sala'];
+            $dining_room = $table['cod_sala'];
 
             // Conserva le altre sale per eventuali cicli (se non ci sono posti in una sala, controlla che siano
             // disponibili in un'altra)
@@ -119,13 +120,15 @@
         }
     }
 
-    function get_reservations($id = '%', $status = 1, $rows = 5, $page = 1, $columns = '*') {
+    function get_reservations($id = '%', $status = 1, $rows = '%', $page = '%', $columns = '*') {
         global $conn;
 
+        $limit_stmt = $rows != '%' && $page != '%' ? ' LIMIT ' . $rows . ' OFFSET ' . $rows * ($page - 1) : '';
         $sql = "SELECT %s FROM `prenotazioni` INNER JOIN `clienti` USING (`cf_cliente`) 
         INNER JOIN `statusprenotazione` USING (`cod_status`) WHERE `cod_prenotazione` LIKE '%s' AND 
-        `cod_status` LIKE '%s' LIMIT %s OFFSET %s;";
-        $arr = to_array($conn->query(sprintf($sql, $columns, $id, $status, $rows, $rows * ($page - 1))));
+        `cod_status` LIKE '%s'" . $limit_stmt . ";";
+
+        $arr = to_array($conn->query(sprintf($sql, $columns, $id, $status)));
 
         foreach ($arr as &$element) {
             $element['tavoli_assegnati'] = get_booked_tables($id);

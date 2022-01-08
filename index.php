@@ -16,5 +16,11 @@
     <?php 
         require_once 'includes/inc_header.php';
     ?>
+    <h1>Benvenuto!</h1>
+    <h3>Piattaforma online di prenotazione tavoli in un ristorante.</h3>
+    
+    <div class="center">
+        <img class="test-picture" src="resources/img/tables.jpg">
+    </div> 
 </body>
 </html>

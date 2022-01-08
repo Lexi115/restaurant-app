@@ -1,10 +1,13 @@
 <?php
     require_once __DIR__ . '/../includes/inc_auth.php';
-    if (!isset($_SESSION['account']) || !has_permission('mostra_prenotazioni', $_SESSION['account']['cod_gruppo'])) {
+
+    // Vieta accesso ai non autorizzati
+    if (no_permission('mostra_prenotazioni')) {
         header('Location: ../errors/forbidden.php');
         exit();
     }
 
+    // Controlla che sia stato passato il parametro di ricerca
     if (!isset($_GET['id'])) {
         die("ID mancante");
     }
@@ -16,6 +19,8 @@
     }
     
     $reservation = $reservation[0];
+
+    // Separa data e ora
     $date_time = explode(' ', $reservation['data']);
 ?>
 <!DOCTYPE html>
@@ -38,7 +43,7 @@
         <input type="text" name="cognome" placeholder="Cognome" value="<?php echo $reservation['cognome']; ?>" required>
         <input type="text" name="nome" placeholder="Nome" value="<?php echo $reservation['nome']; ?>" required>
         <input type="tel" name="telefono" placeholder="Telefono" value="<?php echo $reservation['telefono']; ?>" required>
-        <input type="text" name="indirizzo" placeholder="Indirizzo" value="<?php echo $reservation['indirizzo']; ?>" required>
+        <input type="text" name="indirizzo" placeholder="Indirizzo" value="<?php echo $reservation['indirizzo']; ?>">
         <input type="date" name="data" placeholder="Data" value="<?php echo $date_time[0]; ?>" required>
         <input type="time" name="ora" placeholder="Ora" value="<?php echo $date_time[1]; ?>" required>
         <input type="number" name="n_persone" placeholder="Numero persone" value="<?php echo $reservation['n_persone']; ?>" required>
@@ -61,7 +66,6 @@
         <button type="submit">RIMUOVI</button>
     </form>
 
-    
     <script src="../js/edit_reservation.js"></script>
 </body>
 </html>

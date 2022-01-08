@@ -1,5 +1,6 @@
 const editFormUrl = location.href + '/../edit_forms/edit_room.php';
 
+// Crea una scheda con le informazioni di un record
 function createCard(record) {
     let card = document.createElement('div');
     card.classList.add('card');

@@ -2,6 +2,7 @@ var listContainer;
 var paginationElement;
 var currentPage = 1, rows = 3;
 
+// Inserisci i dati dell'array JSON in una tabella (funzione sostituita da sistema a schede)
 function createHTMLTable(json, columnNames) {
     columns = columnNames.replace(/\s/g, '').split(',');
     var table = document.createElement('table');
@@ -37,6 +38,7 @@ function createHTMLTable(json, columnNames) {
     return table;
 }
 
+// Stampa lista con tutti i records passati
 function displayList(records, container) {
     container.innerHTML = '';
     records.forEach(record => {
@@ -51,10 +53,14 @@ function createCardBodyElement(info) {
     return wrapper;
 }
 
+/**
+ * Stampa elementi di paginazione (pulsanti per cambiare pagina,
+ * input field per mostrare una pagina specifica)
+ */
 function displayPageButtons(totalPages, container, callback) {
     container.innerHTML = '';
 
-    // previous page btn
+    // Pulsante pagina precedente
     let previousPageBtn = document.createElement('button');
     previousPageBtn.innerHTML = '<';
     previousPageBtn.onclick = function () {
@@ -64,7 +70,7 @@ function displayPageButtons(totalPages, container, callback) {
         previousPageBtn.disabled = 'true';
     }
 
-    // next page btn
+    // Pulsante pagina successiva
     let nextPageBtn = document.createElement('button');
     nextPageBtn.innerHTML = '>';
     nextPageBtn.onclick = function () {
@@ -74,7 +80,7 @@ function displayPageButtons(totalPages, container, callback) {
         nextPageBtn.disabled = 'true';
     }
     
-    // input page
+    // Input field e pulsante di ricerca
     let pageInput = document.createElement('input');
     pageInput.type = 'number';
     pageInput.value = currentPage;
@@ -93,19 +99,26 @@ function displayPageButtons(totalPages, container, callback) {
     container.appendChild(pageInput);
     container.appendChild(totalPageSpan);
     container.appendChild(searchButton);
-    
 }
 
+// Cambia pagina
 function goToPage(callback, page = 1, value = '%') {
     callback(page, rows, value).then(records => {
 
-        if (page != 1 && !records[1].length)
+        // Numero totale dei records (tutte le pagine comprese)
+        totalRecords = records[0];
+
+        // Records di quella pagina
+        pageRecords = records[1];
+
+        if (page != 1 && !pageRecords.length)
             return goToPage(1, value);
             
         currentPage = page;
 
-        displayList(records[1], listContainer);
-        let totalPages = Math.ceil(records[0] / rows);
+        displayList(pageRecords, listContainer);
+        let totalPages = Math.ceil(totalRecords / rows);
         displayPageButtons(totalPages, paginationElement, callback);    
+
     });
 }

@@ -1,4 +1,7 @@
 <?php
+    /**
+     * Restituisci elementi di una tabella
+     */
     session_start();
     require_once __DIR__ . '/../includes/inc_auth.php';
     require_once __DIR__ . '/../includes/functions/inc_reservations.php';
@@ -13,6 +16,7 @@
                     header('Location: ../errors/forbidden.php');
                     exit();
                 }
+
                 $status = isset($_GET['status']) ? $_GET['status'] : '%';
                 $columns = isset($_GET['columns']) ? $_GET['columns'] : '*';
                 $page = isset($_GET['page']) ? $_GET['page'] : '1';
@@ -78,7 +82,7 @@
         }
     }
     
-    
+    // Converti array PHP in array JSON (in modo che possa essere analizzato da JS)
     echo json_encode($arr);
     exit();
 ?>

@@ -1,4 +1,9 @@
 <?php
+    /** 
+     * Messaggi di avviso.
+     * Quando qualcosa va storto, vengono mostrati all'utente
+     * (es. login fallito)
+     */ 
     function print_alert($id) {
         switch ($id) {
             case 'invalid-password':

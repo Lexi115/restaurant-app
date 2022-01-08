@@ -1,3 +1,9 @@
+/**
+ * Foglio di stile custom
+*/
+
+
+/* ----- General ----- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -25,6 +31,24 @@ input[type="number"] {
     width: 50px;
 }
 
+h1, h3 {
+    text-align: center;
+    font-weight: normal;
+}
+
+h1 {
+    font-size: xx-large;
+}
+
+h3 {
+    font-size: large;
+}
+
+img.test-picture {
+    width: 600px;
+    border-radius: 10px;
+}
+
 /* ----- Centered container ----- */
 div.center {
     text-align: center;
@@ -43,8 +67,8 @@ p.subtitle {
     font-size: 50px;
 }
 
-/* ----- Card ----- */
 
+/* ----- Card ----- */
 div.card {
     background-color: rgb(238, 238, 238);
 }
@@ -135,12 +159,6 @@ form.form textarea {
     resize: none;
 }
 
-form.form h1 {
-    text-align: center;
-    font-weight: normal;
-    font-size: xx-large;
-}
-
 form.form button {
     font-size: medium;
     padding: 10px 20px;
@@ -150,6 +168,7 @@ form.form button {
 form.form input.hidden {
     display: none;
 }
+
 
 /* ----- Alert ----- */
 span.alert {

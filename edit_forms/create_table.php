@@ -3,6 +3,7 @@
     require_once __DIR__ . '/../includes/inc_auth.php';
     require_once __DIR__ . '/../includes/functions/inc_tables.php';
 
+    // Vieta accesso ai non autorizzati
     if (no_permission('admin')) {
         header('Location: ../errors/forbidden.php');
         exit();

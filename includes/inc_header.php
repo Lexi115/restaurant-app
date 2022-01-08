@@ -1,3 +1,8 @@
+<!-- 
+    Barra di navigazione posta nella parte alta di ogni pagina.
+    Per visualizzare certe voci è necessario possedere permessi
+    specifici (es. Lista prenotazioni)
+-->
 <?php
     function page_is($page_name) {
         return defined($page_name) ? 'disabled' : '';
@@ -9,7 +14,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 </head>
 <body>
     <nav class="navbar">

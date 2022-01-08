@@ -1,6 +1,8 @@
 <?php
     session_start();
     require_once __DIR__ . '/../includes/inc_auth.php';
+
+    // Vieta accesso ai non autorizzati
     if (no_permission('admin')) {
         header('Location: ../errors/forbidden.php');
         exit();

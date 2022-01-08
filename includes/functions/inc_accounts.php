@@ -2,6 +2,7 @@
     require_once __DIR__ . '/../inc_database.php';
     require_once 'inc_general.php';
     
+    // Restituisci tutti gli accounts
     function get_accounts($username, $token = '', $group = '', $rows = 5, $page = 1, $columns = '*') {
         global $conn;
 
@@ -20,6 +21,7 @@
         return to_array($result);
     }
 
+    // Crea nuovo account
     function create_account($username, $password, $group) {
         global $conn;
 
@@ -27,6 +29,7 @@
         $password_hash = password_hash($conn->real_escape_string($password), PASSWORD_BCRYPT);
         $group = $conn->real_escape_string($group);
 
+        // Genera token di accesso
         do {
             $token = bin2hex(random_bytes(20));
         } while (!empty(get_accounts('', $token)));
@@ -38,6 +41,7 @@
         return $conn->query(sprintf($sql, $username, $password_hash, $group, $token));
     }
 
+    // Rimuovi account
     function delete_account($username) {
         global $conn;
 
@@ -45,18 +49,22 @@
         return $conn->query(sprintf($sql, $username));
     }
 
+    // Modifica account già esistente
     function edit_account($token, $username, $password, $group) {
         global $conn;
 
         $username = $conn->real_escape_string($username);
         $group = $conn->real_escape_string($group);
 
+        // È stata cambiata la password?
         if (strlen($password) > 0) {
             $password_hash = password_hash($conn->real_escape_string($password), PASSWORD_BCRYPT);
             $sql = "UPDATE `accounts` SET `username` = '%s', `password_hash` = '%s', `cod_gruppo` = '%s' 
             WHERE `token_accesso` = '%s';";
 
             return $conn->query(sprintf($sql, $username, $password_hash, $group, $token));
+        
+        // A quanto pare no...
         } else {
             $sql = "UPDATE `accounts` SET `username` = '%s', `cod_gruppo` = '%s' 
             WHERE `token_accesso` = '%s';";
@@ -67,6 +75,7 @@
         
     }
 
+    // Verifica che un gruppo abbia un determinato permesso
     function has_permission($permission, $group_id) {
         global $conn;
 

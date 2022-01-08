@@ -1,4 +1,7 @@
 <?php
+    /**
+     * Effettua il login dell'account
+     */
     require __DIR__ . '/../includes/functions/inc_accounts.php';
 
     if (isset($_POST['submit'])) {
@@ -22,8 +25,12 @@
 
         session_start();
         $_SESSION['account'] = $user;
+
+        // Manda al client il cookie contenente il token di accesso
         setcookie('token_accesso', $user['token_accesso'], time() + 86400, '/');
+
         header('Location: ../index.php');
     }
 
     exit();
+?>

@@ -3,6 +3,7 @@
     require_once 'inc_general.php';
     require_once 'inc_tables.php';
     
+    // Verifica l'esistenza di un cliente
     function customer_exists($fiscal_code) {
         global $conn;
 
@@ -10,6 +11,7 @@
         return ($conn->query(sprintf($sql, $fiscal_code)))->num_rows > 0;
     }
 
+    // Crea un nuovo cliente
     function create_customer($fiscal_code, $last_name, $first_name, $phone_number, $address) {
         global $conn;
 
@@ -23,20 +25,13 @@
 
             $sql = "INSERT INTO `clienti` (`cf_cliente`, `cognome`, `nome`, `telefono`, `indirizzo`) 
             VALUES ('%s', '%s', '%s', '%s', '%s');";
-
             return $conn->query(sprintf($sql, $fiscal_code, $last_name, $first_name, $phone_number, $address));
         }
 
         return true;
     }
 
-    function delete_reservation($reservation_id) {
-        global $conn;
-
-        $sql = "DELETE FROM `prenotazioni` WHERE `cod_prenotazione` = '%s';";
-        return $conn->query(sprintf($sql, $reservation_id));
-    }
-
+    // Modifica cliente già esistente
     function edit_customer($fiscal_code, $last_name, $first_name, $phone_number, $address) {
         global $conn;
 
@@ -48,10 +43,18 @@
 
         $sql = "UPDATE `clienti` SET `cognome` = '%s', `nome` = '%s', `telefono` = '%s', `indirizzo` = '%s' 
         WHERE `cf_cliente` = '%s';";
-        echo sprintf($sql, $last_name, $first_name, $phone_number, $address, $fiscal_code);
         return $conn->query(sprintf($sql, $last_name, $first_name, $phone_number, $address, $fiscal_code));
     }
 
+    // Rimuovi prenotazione
+    function delete_reservation($reservation_id) {
+        global $conn;
+
+        $sql = "DELETE FROM `prenotazioni` WHERE `cod_prenotazione` = '%s';";
+        return $conn->query(sprintf($sql, $reservation_id));
+    }
+
+    // Modifica prenotazione già esistente
     function edit_reservation($reservation_id, $fiscal_code, $date, $number_of_people, $notes, $status) {
         global $conn;
 
@@ -68,6 +71,7 @@
         return $conn->query(sprintf($sql, $fiscal_code, $date, $number_of_people, $notes, $status, $reservation_id));
     }
 
+    // Crea nuova prenotazione
     function create_reservation($reservation_id, $fiscal_code, $date, $number_of_people, $notes = '', $status = 1) {
         global $conn;
 
@@ -90,7 +94,7 @@
         while ($number_of_people > 0) {
             $table = get_free_table($number_of_people, $date, $dining_room);
             
-            // Controlla disponibilità tavoli nella sala
+            // Tavolo libero non trovato?
             if (!$table) {
 
                 // Cambia sala se possibile
@@ -120,6 +124,7 @@
         }
     }
 
+    // Restituisci tutte le prenotazioni
     function get_reservations($id = '%', $status = 1, $rows = '%', $page = '%', $columns = '*') {
         global $conn;
 
@@ -136,11 +141,4 @@
         unset($element);
 
         return $arr;
-    }
-
-    function get_reservation_states() {
-        global $conn;
-
-        $sql = "SELECT * FROM `statusprenotazione`;";
-        return to_array($conn->query($sql));
     }

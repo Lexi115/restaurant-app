@@ -1,4 +1,7 @@
 <?php
+    /**
+     * Inserisci o aggiorna elementi di una tabella
+     */
     require_once __DIR__ . '/../includes/functions/inc_reservations.php';
     require_once __DIR__ . '/../includes/inc_auth.php';
 
@@ -15,7 +18,9 @@
                 $number_of_people = $_POST['n_persone'];
                 $notes = $_POST['note_aggiuntive'];
                 
+                // Se la prenotazione esiste già, modificala
                 if (isset($_POST['id'])) {
+
                     if (no_permission('mostra_prenotazioni')) {
                         header('Location: errors/forbidden.php');
                         exit();
@@ -30,7 +35,10 @@
                     delete_all_booked_tables($reservation_id);
                     book_tables($reservation_id, $tables);
                     header('Location: ../reservations_list.php');
+
                 } else {
+
+                    // Genera ID prenotazione
                     do {
                         $reservation_id = bin2hex(random_bytes(5));
                     } while (!empty(get_reservations($reservation_id)));
@@ -38,11 +46,13 @@
                     create_customer($fiscal_code, $last_name, $first_name, $phone_number, $address);
                     create_reservation($reservation_id, $fiscal_code, $date, $number_of_people, $notes, 1);
                     header('Location: ../index.php');
+
                 }
 
                 break;
 
             case 'tables':
+
                 if (no_permission('admin')) {
                     header('Location: errors/forbidden.php');
                     exit();
@@ -52,6 +62,7 @@
                 $number_of_seats = $_POST['n_posti'];
                 $room = $_POST['cod_sala'];
 
+                // Verifica esistenza del tavolo
                 if (empty(get_tables($table_number))) {
                     create_table($table_number, $number_of_seats, $room);
                 } else {
@@ -62,6 +73,7 @@
                 break;
 
             case 'rooms':
+
                 if (no_permission('admin')) {
                     header('Location: errors/forbidden.php');
                     exit();
@@ -70,6 +82,7 @@
                 $room_name = $_POST['nome_sala'];
                 $room_type = $_POST['cod_tipo_sala'];
 
+                // Se la sala esiste già, modificala
                 if (isset($_POST['id'])) {
                     $room_id = $_POST['id'];
                     edit_dining_room($room_id, $room_name, $room_type);
@@ -81,6 +94,7 @@
                 break;
                 
             case 'accounts':
+
                 if (no_permission('admin')) {
                     header('Location: errors/forbidden.php');
                     exit();
@@ -90,10 +104,10 @@
                 $password = $_POST['password'];
                 $group = $_POST['cod_gruppo'];
 
+                // Se l'account esiste già, modificalo
                 if (isset($_POST['id'])) {
                     $token = $_POST['id'];
-                    edit_account($token, $username, $password, $group);
-                    
+                    edit_account($token, $username, $password, $group);  
                 } else {
                     create_account($username, $password, $group);
                 }

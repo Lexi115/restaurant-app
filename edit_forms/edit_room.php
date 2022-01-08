@@ -1,5 +1,13 @@
 <?php
-    
+    require_once __DIR__ . '/../includes/inc_auth.php';
+
+    // Vieta accesso ai non autorizzati
+    if (no_permission('admin')) {
+        header('Location: ../errors/forbidden.php');
+        exit();
+    }
+
+    // Controlla che sia stato passato il parametro di ricerca
     if (!isset($_GET['id'])) {
         die("ID mancante");
     }
@@ -19,9 +27,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <title>Modifica Sala '<?php echo $room['nome_sala']; ?>'</title>
 </head>
 <body>
-    <form action="../api/api_set.php?q=rooms" method="post">
+    <?php 
+        require_once '../includes/inc_header.php';
+    ?>
+    <form class="form" action="../api/api_set.php?q=rooms" method="post">
+        <h1>Modifica Sala</h1>
         <input type="text" name="id" value="<?php echo $room['cod_sala']; ?>" readonly>
         <input type="text" name="nome_sala" placeholder="Nome sala" value="<?php echo $room['nome_sala']; ?>" required>
         <select name="cod_tipo_sala">
@@ -35,7 +48,7 @@
         </select>
         <button type="submit">VAI</button>
     </form>
-    <form action="../api/api_delete.php?q=rooms" method="post">
+    <form class="form" action="../api/api_delete.php?q=rooms" method="post">
         <input class="hidden" type="text" name="id" value="<?php echo $room['cod_sala']; ?>" readonly>
         <button type="submit">RIMUOVI</button>
     </form>

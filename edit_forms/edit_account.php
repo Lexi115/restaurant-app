@@ -1,15 +1,23 @@
 <?php
+    require_once __DIR__ . '/../includes/inc_auth.php';
+
+    // Vieta accesso ai non autorizzati
+    if (no_permission('admin')) {
+        header('Location: ../errors/forbidden.php');
+        exit();
+    }
+
+    // Controlla che sia stato passato il parametro di ricerca
     if (!isset($_GET['id'])) {
         die("ID mancante");
     }
 
-    require_once __DIR__ . '/../includes/functions/inc_accounts.php';
-    $account = get_accounts($_GET['id']);
-    if (empty($account)) {
+    $account_to_edit = get_accounts($_GET['id']);
+    if (empty($account_to_edit)) {
         die("ID non valido");
     }
     
-    $account = $account[0];
+    $account_to_edit = $account_to_edit[0];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,25 +26,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <title>Modifica Account '<?php echo $account_to_edit['username']; ?>'</title>
 </head>
 <body>
-    <form action="../api/api_set.php?q=accounts" method="post">
-        <input class="hidden" type="text" name="id" value="<?php echo $account['token_accesso']; ?>" readonly>
-        <input type="text" name="username" placeholder="Username" value="<?php echo $account['username']; ?>" required>
+    <?php 
+        require_once '../includes/inc_header.php';
+    ?>
+    <form class="form" action="../api/api_set.php?q=accounts" method="post">
+        <h1>Modifica Account</h1>
+        <input class="hidden" type="text" name="id" value="<?php echo $account_to_edit['token_accesso']; ?>" readonly>
+        <input type="text" name="username" placeholder="Username" value="<?php echo $account_to_edit['username']; ?>" required>
         <input type="password" name="password" placeholder="Nuova Password">
-        <select name="gruppo">
+        <select name="cod_gruppo">
             <?php 
                 $groups = get('gruppi'); 
                 foreach ($groups as $g) {
-                    $selected = $g['cod_gruppo'] == $account['cod_gruppo'] ? 'selected' : '';
+                    $selected = $g['cod_gruppo'] == $account_to_edit['cod_gruppo'] ? 'selected' : '';
                     echo '<option value="' . $g['cod_gruppo'] . '" ' . $selected . '>' . $g['nome_gruppo'] . '</option>';
                 }
             ?>
         </select>
         <button type="submit">VAI</button>
     </form>
-    <form action="../api/api_delete.php?q=accounts" method="post">
-        <input class="hidden" type="text" name="id" value="<?php echo $account['username']; ?>" readonly>
+    <form class="form" action="../api/api_delete.php?q=accounts" method="post">
+        <input class="hidden" type="text" name="id" value="<?php echo $account_to_edit['username']; ?>" readonly>
         <button type="submit">RIMUOVI</button>
     </form>
 </body>

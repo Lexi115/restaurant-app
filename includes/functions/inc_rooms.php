@@ -2,6 +2,7 @@
     require_once __DIR__ . '/../inc_database.php';
     require_once 'inc_general.php';
 
+    // Crea sala
     function create_dining_room($room_name, $room_type) {
         global $conn;
 
@@ -9,6 +10,7 @@
         return $conn->query(sprintf($sql, $room_name, $room_type));
     }
 
+    // Modifica sala già esistente
     function edit_dining_room($room_id, $room_name, $room_type) {
         global $conn;
 
@@ -16,6 +18,7 @@
         return $conn->query(sprintf($sql, $room_name, $room_type, $room_id));
     }
 
+    // Rimuovi sala
     function delete_dining_room($room_id) {
         global $conn;
         
@@ -23,6 +26,7 @@
         return $conn->query(sprintf($sql, $room_id));
     }
 
+    // Restituisci tutte le sale tranne una in particolare
     function get_dining_rooms_except($room) {
         global $conn;
 
@@ -30,6 +34,7 @@
         return to_array($conn->query(sprintf($sql, $room)));
     }
 
+    // Restituisci tutte le sale
     function get_dining_rooms($id, $type = '%', $rows = 5, $page = 1, $columns = '*') {
         global $conn;
 

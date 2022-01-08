@@ -1,4 +1,13 @@
 <?php
+    require_once __DIR__ . '/../includes/inc_auth.php';
+
+    // Vieta accesso ai non autorizzati
+    if (no_permission('mostra_prenotazioni')) {
+        header('Location: ../errors/forbidden.php');
+        exit();
+    }
+
+    // Controlla che sia stato passato il parametro di ricerca
     if (!isset($_GET['id'])) {
         die("ID mancante");
     }
@@ -10,6 +19,8 @@
     }
     
     $reservation = $reservation[0];
+
+    // Separa data e ora
     $date_time = explode(' ', $reservation['data']);
 ?>
 <!DOCTYPE html>
@@ -19,19 +30,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <title>Modifica Prenotazione '<?php echo $_GET['id']; ?>'</title>
 </head>
 <body>
-    <form action="../api/api_set.php?q=reservations" method="post">
+    <?php 
+        require_once '../includes/inc_header.php';
+    ?>
+    <form class="form" action="../api/api_set.php?q=reservations" method="post">
+        <h1>Modifica Prenotazione</h1>
         <input type="text" name="id" value="<?php echo $reservation['cod_prenotazione']; ?>" readonly>
-        <input type="text" name="cf" placeholder="Codice Fiscale" value="<?php echo $reservation['cf_cliente']; ?>" required>
+        <input type="text" name="cf" placeholder="Codice Fiscale" value="<?php echo $reservation['cf_cliente']; ?>" readonly>
         <input type="text" name="cognome" placeholder="Cognome" value="<?php echo $reservation['cognome']; ?>" required>
         <input type="text" name="nome" placeholder="Nome" value="<?php echo $reservation['nome']; ?>" required>
         <input type="tel" name="telefono" placeholder="Telefono" value="<?php echo $reservation['telefono']; ?>" required>
-        <input type="text" name="indirizzo" placeholder="Indirizzo" value="<?php echo $reservation['indirizzo']; ?>" required>
+        <input type="text" name="indirizzo" placeholder="Indirizzo" value="<?php echo $reservation['indirizzo']; ?>">
         <input type="date" name="data" placeholder="Data" value="<?php echo $date_time[0]; ?>" required>
         <input type="time" name="ora" placeholder="Ora" value="<?php echo $date_time[1]; ?>" required>
         <input type="number" name="n_persone" placeholder="Numero persone" value="<?php echo $reservation['n_persone']; ?>" required>
-        <select name="status">
+        <select name="cod_status">
             <?php 
                 $states = get('statusprenotazione');
                 foreach ($states as $s) {
@@ -45,12 +61,11 @@
         <textarea name="note_aggiuntive" placeholder="Note"><?php echo $reservation['note_aggiuntive']; ?></textarea>
         <button type="submit" name="submit">VAI</button>
     </form>
-    <form action="../api/api_delete.php?q=reservations" method="post">
+    <form class="form" action="../api/api_delete.php?q=reservations" method="post">
         <input class="hidden" type="text" name="id" value="<?php echo $reservation['cod_prenotazione']; ?>" readonly>
         <button type="submit">RIMUOVI</button>
     </form>
 
-    
     <script src="../js/edit_reservation.js"></script>
 </body>
 </html>

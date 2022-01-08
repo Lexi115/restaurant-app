@@ -1,0 +1,2 @@
+# Reindirizza a pagina 404 custom
+ErrorDocument 404 /restaurant-app/errors/not_found.php
